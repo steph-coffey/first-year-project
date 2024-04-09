@@ -9,7 +9,7 @@ import os
 import pandexo.engine.justplotit as jpi
 import pickle as pk
 
-def run_pandexo(sys_name,mag,ref_wave,star_temp,star_metal,star_logg,trans_dur,star_radius,planet_radius):
+def run_pandexo(params):
     """
     Runs Pandexo and returns wavelength axis (microns) and error bars (ppm).
     For our purposes, we don't need Pandexo's transit spectrum model.
@@ -30,6 +30,10 @@ def run_pandexo(sys_name,mag,ref_wave,star_temp,star_metal,star_logg,trans_dur,s
     ================================================================================
 
     """
+    
+    # loading PandExo params
+    sys_name, mag, ref_wave, star_temp, star_metal, \
+    star_logg, trans_dur, star_radius, planet_radius = params.pandexo_params.values()
     
     ref_wave_dict = {'J' : 1.25, 'H' : 1.6, 'K' : 2.22}
 
