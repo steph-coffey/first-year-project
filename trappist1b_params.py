@@ -5,7 +5,8 @@ csre_params = {
     'planet_name' : 'trappist1b',
     'star_name'   : 'trappist1',
     'flat'        : True,
-    'R'           : 100
+    'R'           : 100,
+    'numtran'     : 1e4
 }
 
 exotransmit_params = {
@@ -17,7 +18,7 @@ pandexo_params = {
     'mag'           : 11.354,
     'ref_wave'      : 'J',
     'star_temp'     : 2566,
-    'star_metal'    : -1.4,
+    'star_metal'    : 0.04,
     'star_logg'     : 5.276,
     'trans_dur'     : 0.6,
     'star_radius'   : 0.119,

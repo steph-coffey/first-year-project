@@ -39,7 +39,7 @@ def CSRE(name):
     params = importlib.import_module(f'{name}_params')
     
     # loading the CSRE params
-    Rp, Rs, Rref, planet_name, star_name, flat, R = params.csre_params.values()
+    Rp, Rs, Rref, planet_name, star_name, flat, R, numtran = params.csre_params.values()
     
     star_spectrum = np.loadtxt(f'{spectra_path}/transmission_{star_name}.dat', skiprows = 2).T  # ExoTransmit 0.3 - 30 um
     
@@ -80,7 +80,7 @@ def CSRE(name):
     return wave, smooth_csre_spec, errs
 
 
-def errorbars(params, wave, smooth_csre_specs, R = 25):
+def errorbars(params, wave, smooth_csre_spec, R = 25):
     """
     Places errorbars on the final transit spectrum.
     
@@ -102,13 +102,13 @@ def errorbars(params, wave, smooth_csre_specs, R = 25):
     err_wave, err = run_pandexo(params)
     
     # rebinning to a lower R
-    new_wave, new_err, dellambs = bin_err(err_wave, err, R)
+    new_err_wave, new_err, dellambs = bin_err(err_wave, err, R)
     
     # need to interp to find y value for error bars on the transit spectrum
-    interp_func = interp1d(wave, smooth_csre_specs)
+    interp_func = interp1d(wave, smooth_csre_spec)
 
-    x    = new_wave
-    y    = interp_func(new_wave)
+    x    = new_err_wave
+    y    = interp_func(new_err_wave)
     yerr = new_err
     
     return x, y, yerr
