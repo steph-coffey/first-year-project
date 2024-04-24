@@ -114,6 +114,34 @@ def errorbars(params, wave, smooth_csre_spec, R = 25):
     return x, y, yerr
 
 
+def chisq(errs):
+    """
+    Calculates chisq and number of standard deviations of the errorbars.
+    
+    ================== Params ==================
+    
+    errs    : error array output by CSRE function
+    
+    ================== Returns =================
+    
+    chisq   : chi-squared value
+    numsig  : number of standard deviations
+    mu      : flux-weighted average
+    """
+    
+    x, y, yerr = errs
+    x, y, yerr = np.array(x), np.array(y), np.array(yerr)
+
+    mu = np.sum(y * yerr**-2) / np.sum(yerr**-2)
+
+    chisq = np.sum(((y - mu)/yerr)**2)
+
+    N = len(yerr)
+    numsig = np.sqrt(chisq - N)
+    
+    return chisq, numsig, mu
+
+
 
 
 
