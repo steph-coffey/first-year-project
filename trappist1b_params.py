@@ -5,8 +5,7 @@ csre_params = {
     'planet_name' : 'trappist1b',
     'star_name'   : 'trappist1',
     'flat'        : True,
-    'R'           : 100,
-    'numtran'     : 1e4
+    'R'           : 100
 }
 
 exotransmit_params = {

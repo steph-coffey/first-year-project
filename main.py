@@ -12,6 +12,42 @@ from binning import bin_err
 # path to transit spectra
 spectra_path = '/Users/coffey/Downloads/kipping/Exo_Transmit/Spectra'
 
+
+def errorbars(params, wave, smooth_csre_spec, R = 25):
+    """
+    Places errorbars on the final transit spectrum.
+    
+    ================== Params ==================
+    
+    params            : parameters for PandExo run (taken from pandexo_params.py input file)
+    wave              : array or list of wavelengths (microns)
+    smooth_csre_spec  : transit spectrum including the CSRE, smoothed to chosen resolution
+    R                 : resolution of error bars (defaulted at 25 to reduce plot clutter)
+    
+    ================== Returns =================
+    
+    x     : wavelength positions of error bars (microns)
+    y     : transit depths at x wavelength positions (ppm)
+    yerr  : array or list of errors on transit spectrum (ppm)
+    """
+    
+    # Running PandExo
+    err_wave, err = run_pandexo(params)
+    
+    # rebinning to a lower R
+    new_err_wave, new_err, dellambs = bin_err(err_wave, err, R)
+    
+    # need to interp to find y value for error bars on the transit spectrum
+    interp_func = interp1d(wave, smooth_csre_spec)
+
+    x    = new_err_wave
+    y    = interp_func(new_err_wave)
+    yerr = new_err
+    
+    return x, y, yerr
+
+
+
 def CSRE(name):
     """
     Calculates the chromatic stellar radii effect (CSRE) for the
@@ -39,7 +75,7 @@ def CSRE(name):
     params = importlib.import_module(f'{name}_params')
     
     # loading the CSRE params
-    Rp, Rs, Rref, planet_name, star_name, flat, R, numtran = params.csre_params.values()
+    Rp, Rs, Rref, planet_name, star_name, flat, R = params.csre_params.values()
     
     star_spectrum = np.loadtxt(f'{spectra_path}/transmission_{star_name}.dat', skiprows = 2).T  # ExoTransmit 0.3 - 30 um
     
@@ -80,47 +116,15 @@ def CSRE(name):
     return wave, smooth_csre_spec, errs
 
 
-def errorbars(params, wave, smooth_csre_spec, R = 25):
-    """
-    Places errorbars on the final transit spectrum.
-    
-    ================== Params ==================
-    
-    params            : parameters for PandExo run (taken from pandexo_params.py input file)
-    wave              : array or list of wavelengths (microns)
-    smooth_csre_spec  : transit spectrum including the CSRE, smoothed to chosen resolution
-    R                 : resolution of error bars (defaulted at 25 to reduce plot clutter)
-    
-    ================== Returns =================
-    
-    x     : wavelength positions of error bars (microns)
-    y     : transit depths at x wavelength positions (ppm)
-    yerr  : array or list of errors on transit spectrum (ppm)
-    """
-    
-    # Running PandExo
-    err_wave, err = run_pandexo(params)
-    
-    # rebinning to a lower R
-    new_err_wave, new_err, dellambs = bin_err(err_wave, err, R)
-    
-    # need to interp to find y value for error bars on the transit spectrum
-    interp_func = interp1d(wave, smooth_csre_spec)
-
-    x    = new_err_wave
-    y    = interp_func(new_err_wave)
-    yerr = new_err
-    
-    return x, y, yerr
-
-
-def chisq(errs):
+def chisquared(name, errs, numtran = 1):
     """
     Calculates chisq and number of standard deviations of the errorbars.
     
     ================== Params ==================
     
+    name    : name of system ; must match what is on {name}_params.py
     errs    : error array output by CSRE function
+    numtran : number of transits to scale the errorbars (Default is 1)
     
     ================== Returns =================
     
@@ -130,7 +134,7 @@ def chisq(errs):
     """
     
     x, y, yerr = errs
-    x, y, yerr = np.array(x), np.array(y), np.array(yerr)
+    x, y, yerr = np.array(x), np.array(y), np.array(yerr) / np.sqrt(numtran)
 
     mu = np.sum(y * yerr**-2) / np.sum(yerr**-2)
 

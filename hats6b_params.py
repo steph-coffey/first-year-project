@@ -5,8 +5,7 @@ csre_params = {
     'planet_name' : 'hats6',
     'star_name'   : 'hats6',
     'flat'        : True,
-    'R'           : 100,
-    'numtran'     : 1e3
+    'R'           : 100
 }
 
 exotransmit_params = {
