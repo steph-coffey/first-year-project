@@ -2,7 +2,7 @@ csre_params = {
     'Rp'          : 7.134e+7,
     'Rs'          : 3.9655e+8,
     'Rref'        : 6.957e8,
-    'planet_name' : 'hats6',
+    'planet_name' : 'hats6b',
     'star_name'   : 'hats6',
     'flat'        : True,
     'R'           : 100
