@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy as sp
+import math
 from scipy.interpolate import interp1d
 
 import importlib
@@ -65,7 +66,7 @@ def plotting(name, wave, smooth_csre_spec, errs = None, numtran = 1, chisq = Non
     return fig, ax
 
 
-def sigma_lines(fig, ax, x, y, N, numsig):
+def sigma_lines(fig, ax, x, y, numsig):
     """
     Handles the plotting of the lines for 
     1sigma, 2sigma, 3sigma, etc. on the chisq plot.
@@ -73,23 +74,26 @@ def sigma_lines(fig, ax, x, y, N, numsig):
     """
     
     for i in range(len(numsig)):
-        # chisq = N + (ns)^2
-        hline_value = N + numsig[i]**2
-
+        # chisq = (ns)^2
+        hline_value = numsig[i]**2
+        
         # min and max for lines
-        hline_max = x[np.where(np.array(y)>=hline_value)[0][0]]
-        vline_max = y[np.where(np.array(y)>=hline_value)[0][0]]
+        xfunc = interp1d(y,x)
+        hline_max = xfunc(hline_value)
 
         ax.hlines(hline_value, 0, hline_max, ls = 'dotted', color = 'black')
-        ax.vlines(hline_max, 0, vline_max, ls = 'dotted', color = 'black')
+        ax.vlines(hline_max, 0, hline_value, ls = 'dotted', color = 'black')
 
         ax.text(hline_max, hline_value, f'${numsig[i]} \sigma$', horizontalalignment = 'right', verticalalignment='bottom')
+        
+        print(f"{numsig[i]}-sigma level: {math.ceil(hline_max)} transits")
         
         # using for plot limits
         if i == 0:
             xmin = 0.95 * hline_max
             ymin = 0.95 * hline_value
         if i == len(numsig) - 1:
+            
             xmax = 1.05 * hline_max
             ymax = 1.05 * hline_value
     

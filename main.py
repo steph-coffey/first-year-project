@@ -124,12 +124,12 @@ def chisquared(name, errs, numtran = 1):
     
     name    : name of system ; must match what is on {name}_params.py
     errs    : error array output by CSRE function
-    numtran : number of transits to scale the errorbars (Default is 1)
+    numtran : number of transits to scale the errorbars by (Default is 1)
     
     ================== Returns =================
     
-    chisq   : chi-squared value
-    numsig  : number of standard deviations
+    chisq   : chi-squared value of errorbs compared to mu
+    numsig  : number of standard deviations from mu
     mu      : flux-weighted average
     """
     
@@ -141,13 +141,9 @@ def chisquared(name, errs, numtran = 1):
     chisq = np.sum(((y - mu)/yerr)**2)
 
     N = len(yerr)
-    numsig = np.sqrt(chisq - N)
+    numsig = np.sqrt(chisq)
     
     return chisq, numsig, mu
-
-
-
-
 
 
 
