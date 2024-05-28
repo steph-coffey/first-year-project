@@ -25,7 +25,9 @@ def plotting(name, wave, smooth_csre_spec, errs = None, numtran = 1, chisq = Non
     fixed_depth = (Rp / Rs)**2 * 1e6 # ppm
     
     fig, ax = plt.subplots(figsize = (9,4))
-    ax.plot(wave, smooth_csre_spec, c = 'black', label = 'CSRE', alpha = 0.75)
+    
+    ### Transit spectrum ###
+    ax.plot(wave, smooth_csre_spec, c = 'black', label = 'CSRE', alpha = 1)
     ax.axhline(fixed_depth, c = 'black', ls = 'dotted', label = 'fixed transit depth')
     
     ### Errors ###
@@ -34,12 +36,11 @@ def plotting(name, wave, smooth_csre_spec, errs = None, numtran = 1, chisq = Non
         # plots multiple errorbars corresponding for different number of transits
         if isinstance(numtran, list):
             numtran.sort() # makes sure it plots smaller errorbars on top of larger ones
-            alphas = np.linspace(0.5,1,len(numtran))
+            alphas = np.logspace(np.log10(0.33),np.log10(1),len(numtran))
             for i in range(len(numtran)):
-                ax.errorbar(x, y, yerr/np.sqrt(numtran[i]), None, 'o', ms = 2, c = 'black', label = f'{int(numtran[i])} transits', capsize = 2.5, alpha = alphas[i]) 
+                ax.errorbar(x, y, yerr/np.sqrt(numtran[i]), None, 'o', ms = 2, c = 'slateblue', label = f'{int(numtran[i])} transits', capsize = 2.5, alpha = alphas[i]) 
         else:
-            ax.errorbar(x, y, yerr/np.sqrt(numtran), None, 'o', ms = 2, c = 'black', label = f'{int(numtran)} transits', capsize = 2.5, alpha = 0.75)
-
+            ax.errorbar(x, y, yerr/np.sqrt(numtran), None, 'o', ms = 2, c = 'crimson', label = f'{int(numtran)} transits', capsize = 2.5, alpha = 0.75)
 
     ### Chisq ###
     # includes chisq value on plot
@@ -53,7 +54,7 @@ def plotting(name, wave, smooth_csre_spec, errs = None, numtran = 1, chisq = Non
     
     
     ### Labels and limits ###
-    fig.suptitle('Chromatic Stellar Radii Effect')
+    #fig.suptitle('Chromatic Stellar Radii Effect')
     ax.set_xlabel('Wavelength (um)')
     ax.set_ylabel('Transit depth (ppm)')
     ax.legend(title = f'{name}',fontsize='small', fancybox=True, facecolor = 'lightgray', loc = 'upper right')
