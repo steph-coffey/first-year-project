@@ -104,7 +104,7 @@ def sigma_lines(fig, ax, x, y, numsig):
     return fig, ax
 
 
-def plot_depth_changes(name, wave, spec, errs, molecules, N = 5):
+def plot_depth_changes(name, wave, spec, errs, molecules, N = 1):
     """
     Calculates and plots the change in transit depth according to the analytic equation:
     
@@ -121,7 +121,7 @@ def plot_depth_changes(name, wave, spec, errs, molecules, N = 5):
     spec       : transit spectrum including the CSRE
     errs       : error array output by CSRE function
     molecules  : list of molecules included in your ExoTransmit fit
-    N          : number of scale heights to use, should be of order unity (Default = 5)
+    N          : number of scale heights to use, should be of order unity (Default = 1)
     
     ================== Returns =================
     
@@ -168,8 +168,6 @@ def plot_depth_changes(name, wave, spec, errs, molecules, N = 5):
     # plotting all the deltadeltas from each molecule
     for i in range(len(deltadeltas)):
         ax.fill_between(wave, mu - deltadeltas[i], mu + deltadeltas[i])
-    # adding deltadelta label on side
-    ax.text(5.35,mu,']', fontsize = 14, verticalalignment = 'bottom')
-    ax.text(5.425,mu,r'$\Delta\delta$', fontsize = 14, verticalalignment = 'bottom')
+    
     
     return fig, ax
